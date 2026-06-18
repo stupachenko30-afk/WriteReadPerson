@@ -1,4 +1,5 @@
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.TreeSet;
@@ -10,6 +11,32 @@ public class MainCompany {
 
         fillCompanySet(company);
         printEmployeeSet(company);
+
+        String home = System.getProperty("user.home");
+
+        String folderPath = home + File.separator + "company";
+        String fileName = "employee.txt";
+        saveCompanyToFile(company,folderPath,fileName);
+
+    }
+
+    private static void saveCompanyToFile(TreeSet<Employee> company,
+                                          String folderPath,
+                                          String fileName) {
+        File folder = new File(folderPath);
+        if (folder.exists() == false)
+            folder.mkdirs();
+        String filePath = folderPath + File.separator + fileName;
+        File fl = new File(filePath);
+        if (fl.exists() == false){
+            try {
+                fl.createNewFile();
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+
 
     }
 
