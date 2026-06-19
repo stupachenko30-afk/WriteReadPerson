@@ -1,28 +1,62 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.TreeSet;
 
 public class MainCompany {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        String home = System.getProperty("user.home");
 
         TreeSet<Employee> company = new TreeSet<>();
 
-        fillCompanySet(company);
-        printEmployeeSet(company);
-
-        String home = System.getProperty("user.home");
-
         String folderPath = home + File.separator + "company";
         String fileName = "employee.txt";
-        saveCompanyToFile(company,folderPath,fileName);
+
+        readEmployeesFromFile(company, folderPath, fileName);
+        printEmployeeSet(company);
+//        fillCompanySet(company);
+//        printEmployeeSet(company);
+//        saveCompanyToFile(company, folderPath, fileName);
 
     }
 
+    private static void readEmployeesFromFile(TreeSet<Employee> company,
+                                              String folderPath,
+                                              String fileName) {
+        String filePath = folderPath + File.separator + fileName;
+        File fl = new File(filePath);
+        if (fl.exists() == false) {
+
+
+        System.out.println("file " + filePath + "not exists");
+        return;}
+        try {
+            FileReader fr = new FileReader(fl);
+            BufferedReader br = new BufferedReader(fr);
+            while (true) {
+                String fromFile = br.readLine();
+                if (fromFile == null) {
+                    br.close();
+                    break;
+                }
+                String[] ar = fromFile.split("#");
+                String name = ar[0];
+                int id = Integer.parseInt(ar[1]);
+                String position = ar[2];
+                double salary = Double.parseDouble(ar[3]);
+                Employee emp = new Employee(name,id,position,salary);
+                company.add(emp);
+            }
+
+        }
+catch (IOException e){
+    System.out.println(e.getMessage());
+}
+    }
+
+
+
     private static void saveCompanyToFile(TreeSet<Employee> company,
                                           String folderPath,
-                                          String fileName) {
+                                          String fileName) throws IOException {
         File folder = new File(folderPath);
         if (folder.exists() == false)
             folder.mkdirs();
@@ -37,8 +71,28 @@ public class MainCompany {
 
         }
 
+        //  "Yevhenii  Stupachenko#12345QA TeamLead#15000"
+        try {
+            FileWriter fw = new
+                    FileWriter(fl);
+            BufferedWriter bw = new BufferedWriter(fw);
+            for (Employee e : company) {
+                String toFile = e.getName()
+                        +"#" + e.getId() + "#"
+                        + e.getPosition() + "#"
+                        + e.getSalary();
+                bw.write(toFile);
+                bw.newLine();
 
+            }
+            bw.close();
+
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+        }
     }
+
+
 
     private static void printEmployeeSet(TreeSet<Employee> company) {
         for (Employee e : company){
@@ -84,3 +138,42 @@ while (true){
         }
     }
 }}
+/*
+Homework:
+
+    TreeSet<Book> bookStore
+    Book
+    -----
+    title(String)
+    author(String)
+    pages(int)
+    price(double)
+
+    fillBooks set(bookStore)
+    saveBooksToFile(bookStore,folderPath,fileName)
+    readBooksFromFile(bookStore,folderPath,fileName)
+    printBooksStore(bookStore)
+
+
+    Advanced:*****
+Project Supermarket
+2.1
+ add methods in class Supermarket:
+ public void read productsFromFile(String folderPath,String fileName)
+
+ public void saveProductsToFile(String folderPath,String fileName)
+
+ public void fillProducts()
+
+
+ 2.
+Advanced:*****
+Project Supermarket
+2.1
+ add methods in class Supermarket:
+ public void readProductsFromFile(ArrayList<Product> stock,String folderPath,String fileName)
+
+ public void saveProductsToFile(ArrayList<Product> stock,String folderPath,String fileName)
+
+ public void fillProducts()
+ */
